@@ -3,6 +3,9 @@ import User from "../models/user.model.js"
 import bcrypt from 'bcryptjs'
 import { genToken } from "../config/token.js";
 
+
+// otp verification only admin user time j karvanu 6e.
+
 export const sentOtpSignup = async (req, res) => {
     try {
         const { name, email, password } = req.body

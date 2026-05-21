@@ -1,6 +1,5 @@
 import Role from "../models/role.model.js"
 
-
 // aa role create karva mate api banai 6e.
 
 export const createRole = async(req,res)=>{
