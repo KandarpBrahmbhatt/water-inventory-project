@@ -1,6 +1,5 @@
 import Inventory from "../models/inventory.model.js"
 
-
 export const createInventory = async (req, res) => {
     try {
         // const { productName, sku, category, price, quantity, supplier, lowStockThreshold } = req.body

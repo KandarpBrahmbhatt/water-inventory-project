@@ -98,3 +98,84 @@ export const login = async (req, res) => {
         return res.status(500).json({ message: "user Login error", error })
     }
 }
+
+
+// singel login api for all the user customer/admin/and all other staff
+
+// import Admin from "../models/admin.model.js"
+// import Staff from "../models/staff.model.js"
+// import Customer from "../models/customer.model.js"
+// import bcrypt from "bcryptjs"
+// import jwt from "jsonwebtoken"
+
+// export const login = async (req, res) => {
+//   try {
+//     const { email, password } = req.body
+
+//     if (!email || !password) {
+//       return res.status(400).json({
+//         message: "All fields are required"
+//       })
+//     }
+
+//     let user = null
+//     let role = ""
+
+//     // check admin
+//     user = await Admin.findOne({ email })
+//     if (user) role = "admin"
+
+//     // check staff
+//     if (!user) {
+//       user = await Staff.findOne({ email })
+//       if (user) role = user.role
+//     }
+
+//     // check customer
+//     if (!user) {
+//       user = await Customer.findOne({ email })
+//       if (user) role = "customer"
+//     }
+
+//     if (!user) {
+//       return res.status(404).json({
+//         message: "User not found"
+//       })
+//     }
+
+//     const isMatch = await bcrypt.compare(
+//       password,
+//       user.password
+//     )
+
+//     if (!isMatch) {
+//       return res.status(400).json({
+//         message: "Invalid password"
+//       })
+//     }
+
+//     const token = jwt.sign(
+//       {
+//         id: user._id,
+//         role
+//       },
+//       process.env.JWT_SECRET,
+//       { expiresIn: "7d" }
+//     )
+
+//     res.status(200).json({
+//       message: "Login successful",
+//       token,
+//       user: {
+//         id: user._id,
+//         name: user.name,
+//         email: user.email,
+//         role
+//       }
+//     })
+//   } catch (error) {
+//     res.status(500).json({
+//       message: error.message
+//     })
+//   }
+// }

@@ -75,3 +75,21 @@ export const updateWaterProduct = (req, res) => {
     return res.status(500).json({ message: "updatedWaterProdcut error" })
   }
 }
+
+
+export const deleteWaterProduct = async (req, res) => {
+  try {
+    const { id } = req.params
+
+    const deletedProduct = await WaterProduct.findByIdAndDelete(id)
+
+    if (!deletedProduct) {
+      return res.status(400).json({ message: "deletedProduct not found" })
+    }
+
+    return res.status(200).json({ message: "deleted product sucessfully", deletedProduct })
+  } catch (error) {
+    console.log(error)
+    return res.status(500).json({ message: "deleted Product error", error })
+  }
+}

@@ -5,9 +5,9 @@ import { createWaterProduct, getAllWaterProduct, getSingleProduct, updateWaterPr
 const WaterProductRouter = express.Router()
 
 WaterProductRouter.post("/create", isAuth, authorizeRole("Admin","Manager"),createWaterProduct)
-WaterProductRouter.get("/get", getAllWaterProduct)
-WaterProductRouter.get("/:id",getSingleProduct)
-WaterProductRouter.put("/:id",updateWaterProduct)
+WaterProductRouter.get("/get", isAuth,getAllWaterProduct)
+WaterProductRouter.get("/:id",isAuth,getSingleProduct)
+WaterProductRouter.put("/:id",isAuth,updateWaterProduct)
 // WaterProductRouter.delete("/:id",dele)
 
 export default WaterProductRouter
