@@ -4,6 +4,7 @@
 import { sendInvoiceMail } from "../config/mail.js"
 import stripe from "../config/stripe.js"
 import Order from "../models/order.model.js"
+import WaterProduct from "../models/waterProduct.model.js"
 import generateInvoice from "../utils/generateinvoice.js"
 
 export const createStripeSession = async (req, res) => {
@@ -89,8 +90,7 @@ export const stripeWebhook = async (req, res) => {
 
 
         // aa niche no code upervado code comment kari replace kariu 6e pdf invocie gerater karvamate payment sucessfully thai jay pachi pdf down load karvama te aa lakhiyu 6e.
-        const order = await Order.findById(orderId)
-          .populate("customerId");
+        const order = await Order.findById(orderId).populate("customerId");
 
         if (!order) {
           return;
@@ -99,6 +99,23 @@ export const stripeWebhook = async (req, res) => {
         order.paymentStatus = "paid";
         order.status = "completed";
         order.stripeSessionId = session.id;
+
+        //after payment stock update
+        const product = await WaterProduct.findById(order.productName)
+
+        console.log("ORDER:", order);
+        console.log("PRODUCT:", product);
+        console.log("QTY:", order.Qty);
+
+        if (!product) {
+          return
+        }
+
+        if (product.stockQuantity < order.Qty) {
+          return res.status(400).json({ message: "out of stock" })
+        }
+        product.stockQuantity = product.stockQuantity - order.Qty
+        await product.save()
 
         // Generate PDF
         const invoicePath = await generateInvoice(order); //aa generateInvoice ae utils file ma  thi lakhelu 6e

@@ -10,19 +10,29 @@ const orderSchema = new mongoose.Schema({
         ref: "WaterProduct"
     },
     Qty: {
-        type: String,
+        type: Number,
     },
     price: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "WaterProduct",
+        type: Number,
     },
     totalAmount: {
         type: Number
     },
     status: {
         type: String,
-        enum: ["pending", "completed"],
+        enum: [
+            "pending",
+            "completed",
+            "packed",
+            "out_for_delivery",
+            "delivered",
+            "cancelled"
+        ],
         default: "pending"
+    },
+    cancelReason: {
+        type: String,
+        default: null
     },
     createdAt: {
         type: Date,
@@ -35,7 +45,7 @@ const orderSchema = new mongoose.Schema({
     paymentIntentId: String,
     paymentStatus: {
         type: String,
-        enum: ["pending", "paid", "failed"],
+        enum: ["pending", "paid", "failed","refuned"],
         default: "pending"
     },
 
