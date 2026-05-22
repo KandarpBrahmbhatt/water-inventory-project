@@ -41,3 +41,5 @@ export const getCustomer = async (req, res) => {
         return res.status(500).json({ message: "getting customer error", error })
     }
 }
+
+

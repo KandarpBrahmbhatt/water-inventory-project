@@ -3,42 +3,47 @@
 
 import stripe from "../config/stripe.js"
 import Order from "../models/order.model.js"
+import generateInvoice from "../utils/generateinvoice.js"
 
 export const createStripeSession = async (req, res) => {
-    try {
-        const { orderId } = req.body
+  try {
+    const { orderId } = req.body
 
-        const order = await Order.findById(orderId)
+    const order = await Order.findById(orderId)
 
-        if (!order) {
-            return res.status(400).json({ message: "order not found" })
-        }
-
-        const session = await stripe.checkout.sessions.create({
-            payment_method_types: ["card"],
-            mode: "payment",
-
-            line_items: [
-                {
-                    price_data: {
-                        currency: "inr",
-                        product_data: {
-                            name: "water jar"
-                        },
-                        unit_amount: order.totalAmount * 100,
-                    },
-                    quantity: 1,
-                }
-            ],
-            success_url: "http://localhost:3000/success",
-            cancel_url: "http://localhost:3000/cancel",
-        })
-
-        return res.status(200).json({message:"stripe payment sucessfully",url:session.url})
-    } catch (error) {
-        console.log("createStripeSession error", error)
-        return res.status(500).json({message:"Stripe payment error",error})
+    if (!order) {
+      return res.status(400).json({ message: "order not found" })
     }
+
+    const session = await stripe.checkout.sessions.create({
+      payment_method_types: ["card"],
+      mode: "payment",
+
+      line_items: [
+        {
+          price_data: {
+            currency: "inr",
+            product_data: {
+              name: "water jar"
+            },
+            unit_amount: order.totalAmount * 100,
+          },
+          quantity: 1,
+        }
+      ],
+      // ADD THIS
+      metadata: {
+        orderId: order._id.toString(),
+      },
+      success_url: "http://localhost:3000/success",
+      cancel_url: "http://localhost:3000/cancel",
+    })
+
+    return res.status(200).json({ message: "stripe payment sucessfully", url: session.url })
+  } catch (error) {
+    console.log("createStripeSession error", error)
+    return res.status(500).json({ message: "Stripe payment error", error })
+  }
 }
 
 
@@ -75,12 +80,34 @@ export const stripeWebhook = async (req, res) => {
         const session = event.data.object;
         const orderId = session.metadata.orderId;
 
-        await Order.findByIdAndUpdate(orderId, {
-          paymentStatus: "paid",
-          status: "completed",
-          stripeSessionId: session.id,
-        });
+        // await Order.findByIdAndUpdate(orderId, {
+        //   paymentStatus: "paid",
+        //   status: "completed",
+        //   stripeSessionId: session.id,
+        // });
 
+
+        // aa niche no code upervado code comment kari replace kariu 6e pdf invocie gerater karvamate payment sucessfully thai jay pachi pdf down load karvama te aa lakhiyu 6e.
+        const order = await Order.findById(orderId)
+          .populate("customerId");
+
+        if (!order) {
+          return;
+        }
+
+        order.paymentStatus = "paid";
+        order.status = "completed";
+        order.stripeSessionId = session.id;
+
+        // Generate PDF
+        const invoicePath = await generateInvoice(order); //aa generateInvoice ae utils file ma  thi lakhelu 6e
+
+        // Save path in DB aa invoicePdf ae model nu name 6e
+        order.invoicePdf = invoicePath;
+
+        await order.save();
+
+        console.log("Invoice Generated");
         console.log(" Order updated:", orderId);
         break;
 
@@ -94,4 +121,24 @@ export const stripeWebhook = async (req, res) => {
   }
 
   return res.json({ received: true });
+};
+
+
+//pdf download api customer wants invoice
+export const downloadInvoice = async (req, res) => {
+  try {
+    const order = await Order.findById(req.params.id);
+    if (!order) {
+      return res.status(404).json({message: "Order not found"});
+    }
+    // invoicePdf model mathi lakhelu 6e
+    if (!order.invoicePdf) {
+      return res.status(404).json({message: "Invoice not found"});
+    }
+
+    return res.download(order.invoicePdf); //now send pdf file
+
+  } catch (error) {
+    return res.status(500).json({message: error.message});
+  }
 };

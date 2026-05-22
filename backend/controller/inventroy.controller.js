@@ -51,7 +51,7 @@ export const createInventory = async (req, res) => {
 export const getAllInventroy = async (req, res) => {
     try {
         const newInventory = await Inventory.find()
-
+console.log(newInventory)
         let query = {}
 
         if (!newInventory) {
@@ -108,6 +108,8 @@ export const deletedInvetory = async (req, res) => {
             req.params.id,
             req.body
         )
+        console.log(deletedInventroy)
+        
         return res.status(200).json({ message: "deletedInventory sucessfully", deletedInventroy })
 
     } catch (error) {

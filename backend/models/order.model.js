@@ -26,7 +26,11 @@ const orderSchema = new mongoose.Schema({
         type: String,
         enum: ["pending", "paid", "failed"],
         default: "pending"
-    }
+    },
+// pdf invoice pdf gereation mate
+    invoicePdf: {
+   type: String
+}
 }, {
     timestamps: true
 })
