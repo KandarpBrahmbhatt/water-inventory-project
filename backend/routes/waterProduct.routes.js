@@ -9,4 +9,5 @@ WaterProductRouter.get("/get", getAllWaterProduct)
 WaterProductRouter.get("/:id",getSingleProduct)
 WaterProductRouter.put("/:id",updateWaterProduct)
 // WaterProductRouter.delete("/:id",dele)
+
 export default WaterProductRouter

@@ -1,6 +1,6 @@
 import Customer from "../models/customer.model.js"
 import bcrypt from "bcryptjs"
-import User from "../models/user.model.js"
+// import User from "../models/user.model.js"
 export const createCustomer = async (req, res) => {
     try {
         const { name, email, password } = req.body
@@ -10,7 +10,7 @@ export const createCustomer = async (req, res) => {
             return res.status(400).json({ message: "All field are required" })
         }
 
-        const existingcustomer = await User.findOne({ email })
+        const existingcustomer = await Customer.findOne({ email })
 
         if (existingcustomer) {
             return res.status(400).json({ message: "email already existing" })
@@ -18,7 +18,7 @@ export const createCustomer = async (req, res) => {
 
         const hashpassword = await bcrypt.hash(password, 10)
 
-        const customer = await User.create({
+        const customer = await Customer.create({
             name,
             email,
             password: hashpassword

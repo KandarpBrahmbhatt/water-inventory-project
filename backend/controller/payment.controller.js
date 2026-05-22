@@ -1,6 +1,7 @@
 
 // stripe payment integration
 
+import { sendInvoiceMail } from "../config/mail.js"
 import stripe from "../config/stripe.js"
 import Order from "../models/order.model.js"
 import generateInvoice from "../utils/generateinvoice.js"
@@ -107,6 +108,15 @@ export const stripeWebhook = async (req, res) => {
 
         await order.save();
 
+        // send email with pdf payment sccessfully send email
+        await sendInvoiceMail(
+          order.customerId.email,
+          order._id,
+          invoicePath
+        );
+
+        console.log("Invoice Email Sent");
+
         console.log("Invoice Generated");
         console.log(" Order updated:", orderId);
         break;
@@ -129,16 +139,16 @@ export const downloadInvoice = async (req, res) => {
   try {
     const order = await Order.findById(req.params.id);
     if (!order) {
-      return res.status(404).json({message: "Order not found"});
+      return res.status(404).json({ message: "Order not found" });
     }
     // invoicePdf model mathi lakhelu 6e
     if (!order.invoicePdf) {
-      return res.status(404).json({message: "Invoice not found"});
+      return res.status(404).json({ message: "Invoice not found" });
     }
 
     return res.download(order.invoicePdf); //now send pdf file
 
   } catch (error) {
-    return res.status(500).json({message: error.message});
+    return res.status(500).json({ message: error.message });
   }
 };

@@ -5,6 +5,17 @@ const orderSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: "Customer"
     },
+    productName: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "WaterProduct"
+    },
+    Qty: {
+        type: String,
+    },
+    price: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "WaterProduct",
+    },
     totalAmount: {
         type: Number
     },
@@ -27,10 +38,11 @@ const orderSchema = new mongoose.Schema({
         enum: ["pending", "paid", "failed"],
         default: "pending"
     },
-// pdf invoice pdf gereation mate
+
+    // pdf invoice pdf gereation mate
     invoicePdf: {
-   type: String
-}
+        type: String
+    }
 }, {
     timestamps: true
 })

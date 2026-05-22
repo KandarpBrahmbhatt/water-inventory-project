@@ -2,7 +2,7 @@ import Order from "../models/order.model.js"
 
 export const createOrder = async (req, res) => {
   try {
-    const { customerId, totalAmount, status } = req.body
+    const { customerId, totalAmount, status ,productName,Qty,price} = req.body
 
     if (!customerId || !totalAmount) {
       return res.status(400).json({ messsage: "All field are required" })
@@ -12,6 +12,9 @@ export const createOrder = async (req, res) => {
       customerId,
       totalAmount,
       status: status || "pending",
+      productName,
+      Qty,
+      price,
       expiresAt: new Date(Date.now() + 3600000)
     })
 

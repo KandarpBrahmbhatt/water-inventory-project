@@ -41,7 +41,7 @@ const invoiceTemplate = (order) => {
 
     <div class="header">
       <h1>Water Factory Invoice</h1>
-      <p>Invoice ID: ${order._id}</p> //order id
+      <p>Invoice ID: ${order._id}</p>
     </div>
 
     <h3>Customer Details</h3>
@@ -62,7 +62,7 @@ const invoiceTemplate = (order) => {
           order.items?.map(item => `
             <tr>
               <td>${item.productName}</td>
-              <td>${item.quantity}</td>
+              <td>${item.Qty}</td>
               <td>₹${item.price}</td>
             </tr>
           `).join("")
