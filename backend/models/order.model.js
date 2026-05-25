@@ -52,7 +52,15 @@ const orderSchema = new mongoose.Schema({
     // pdf invoice pdf gereation mate
     invoicePdf: {
         type: String
-    }
+    },
+
+
+    qrCode: {
+      type: String,
+      default: "",
+    },
+
+    deliveryOTP: String,
 }, {
     timestamps: true
 })

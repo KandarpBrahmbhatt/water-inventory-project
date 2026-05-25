@@ -11,6 +11,9 @@ import customerRouter from './routes/customer.routes.js'
 import orderRouter from './routes/order.routes.js'
 import paymentRouter from './routes/payment.routes.js'
 import { stripeWebhook } from './controller/payment.controller.js'
+import socialAuthRouter from './routes/socialAuth.routes.js'
+import { swaggerDocs } from './config/swagger.js'
+import aggregateRouter from './routes/aggregate.routes.js'
 dotenv.config()
 
 const app =express()
@@ -19,6 +22,10 @@ app.post(
   express.raw({ type: "application/json" }),
   stripeWebhook
 );
+
+// swagger comment mate lakhiyu 6e.
+swaggerDocs(app)
+
 app.use(express.json())
 app.use(cookieParser());
 
@@ -30,6 +37,8 @@ app.use("/api/product",WaterProductRouter)
 app.use("/api/customer",customerRouter)
 app.use("/api/order",orderRouter)
 app.use("/api/payment",paymentRouter)
+app.use("/api/social",socialAuthRouter)
+app.use("/api/aggregate",aggregateRouter)
 
 const port = process.env.PORT || 5000
 app.listen(port,()=>{

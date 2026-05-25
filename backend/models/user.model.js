@@ -13,6 +13,22 @@ const userSchema = new mongoose.Schema({
     password: {
         type: String
     },
+    providers: {
+      google: {
+        id: {
+          type: String,
+          index: true // fast lookup for Google login
+        },
+        email: String
+      },
+      facebook: {
+        id: {
+          type: String,
+          index: true // fast lookup for Facebook login
+        },
+        email: String
+      }
+    },
     role: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "roles",

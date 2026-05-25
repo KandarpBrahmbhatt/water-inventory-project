@@ -2,11 +2,12 @@ import stripe from "../config/stripe.js"
 // import Inventory from "../models/inventory.model.js"
 import Order from "../models/order.model.js"
 import WaterProduct from "../models/waterProduct.model.js"
+import QRCode from "qrcode";
 
 export const createOrder = async (req, res) => {
   try {
     const { customerId, totalAmount, status, productName, Qty, price } = req.body
-
+    console.log(req.body)
     if (!customerId || !totalAmount) {
       return res.status(400).json({ messsage: "All field are required" })
     }
@@ -20,6 +21,21 @@ export const createOrder = async (req, res) => {
       price,
       expiresAt: new Date(Date.now() + 3600000)
     })
+
+
+    // Generate QR Data
+    const qrData = JSON.stringify({
+      orderId: order._id,
+    })
+
+    // Generate QR Base64
+    const qrImage =
+      await QRCode.toDataURL(qrData);
+
+    order.qrCode = qrImage;
+
+    await order.save();
+
 
     return res.status(201).json({ message: "Order created succesfully", order })
   } catch (error) {
@@ -53,7 +69,7 @@ export const cancelOrder = async (req, res) => {
     // waterProdcutRestore.stockQuantity += order.Qty
     // await waterProdcutRestore.save()
 
-        waterProdcutRestore.stockQuantity += Number(order.Qty);
+    waterProdcutRestore.stockQuantity += Number(order.Qty);
 
     await waterProdcutRestore.save()
     // stripe refund
